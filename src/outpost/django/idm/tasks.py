@@ -50,7 +50,7 @@ class IDMTasks:
 
         entries = ldap.extend.standard.paged_search(
             search_base=target.group_base,
-            search_filter="(objectClass=groupOfNames)",
+            search_filter="(objectClass=group)",
             search_scope=ldap3.SUBTREE,
             attributes=("member", "description"),
             paged_size=settings.IDM_LDAP_PAGE_SIZE,
@@ -136,7 +136,7 @@ class IDMTasks:
                         *ldap.add(
                             dn,
                             attributes={
-                                "objectClass": ["top", "groupOfNames"],
+                                "objectClass": ["top", "group"],
                                 "cn": cn,
                                 "member": actual,
                                 "extensionName": str(org.pk),
