@@ -75,10 +75,13 @@ class IDMTasks:
         ).filter(person_count__gt=0)
         logger.debug(f"Processing {orgs.count()} organizations for {target}")
 
-        for count, org in enumerate(orgs):
+        for org in orgs:
+            name = (
+                org.name.get(language) if isinstance(org.name, dict) else str(org.name)
+            )
             slug = escape_filter_chars(
                 textwrap.shorten(
-                    slugify(org.name.get(language)),
+                    slugify(name),
                     width=(
                         settings.IDM_LDAP_GROUP_NAME_LENGTH - (len(str(org.pk)) + 1)
                     ),
