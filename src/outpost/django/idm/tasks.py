@@ -94,7 +94,7 @@ class IDMTasks:
             actual = set(
                 (
                     users.get(p.username)
-                    for p in org.persons.all()
+                    for p in org.persons.filter(employed=True)
                     if p.username in users
                 )
             )
