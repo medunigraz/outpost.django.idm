@@ -1,17 +1,14 @@
 import logging
 import textwrap
-from collections import namedtuple
+from collections import (
+    defaultdict,
+    namedtuple,
+)
 
-import ldap3.abstract
-import ldap3.abstract.entry
+import ldap3
 from celery import shared_task
 from django.db.models import Count
-from ldap3 import (
-    ALL,
-    SAFE_SYNC,
-    Connection,
-    Server,
-)
+from django.utils import timezone
 from ldap3.utils.conv import escape_filter_chars
 from outpost.django.campusonline import models as campusonline
 from slugify import slugify
@@ -37,13 +34,13 @@ class IDMTasks:
 
         logger.info(f"Synchronizing organizational groups to {target}")
 
-        ldap = Connection(
-            Server(target.url, get_info=ALL),
+        ldap = ldap3.Connection(
+            ldap3.Server(target.url, get_info=ldap3.ALL),
             target.username,
             target.password,
             auto_bind=True,
             auto_range=True,
-            client_strategy=SAFE_SYNC,
+            client_strategy=ldap3.SAFE_SYNC,
         )
 
         logger.debug(f"Searcing for existing groups {ldap}")
@@ -159,3 +156,54 @@ class IDMTasks:
                     logger.error(
                         f"Could not delete LDAP group {dn} on {target}: {result}"
                     )
+
+
+class ThreatTasks:
+    @shared_task(bind=True, ignore_result=True, name=f"{__name__}.Threat:check")
+    def check(task, pk):
+        from .models import Source
+
+        try:
+            source = Source.objects.get(pk=pk)
+        except Source.DoesNotExist:
+            return
+        server = (ldap3.Server(source.target.url, get_info=ldap3.ALL),)
+        ldap = ldap3.Connection(
+            server,
+            source.target.username,
+            source.target.password,
+            auto_bind=True,
+            auto_range=True,
+            client_strategy=ldap3.SAFE_SYNC,
+        )
+        found = defaultdict(list)
+        for identity, password, foreign, details in source.fetch():
+            entries = ldap.extend.standard.paged_search(
+                search_base=source.target.user_base,
+                search_filter=source.ldap_filter.format(identity=identity),
+                search_scope=ldap3.SUBTREE,
+                attributes=(source.ldap_uid,),
+                paged_size=settings.IDM_LDAP_PAGE_SIZE,
+                generator=True,
+            )
+            for e in entries:
+                dn = e.get("dn")
+                logger.debug(f"Found user in {source.target}: {dn}")
+                uid = e.get("attributes").get(source.ldap_uid)
+                check = ldap3.Connection(
+                    server,
+                    dn,
+                    password,
+                    auto_bind=False,
+                    auto_range=True,
+                    client_strategy=ldap3.SAFE_SYNC,
+                )
+                result = Result(*check.bind())
+                if result.success:
+                    found[uid].append((foreign, details))
+        source.last = timezone.now()
+        source.save()
+        logger.debug(found.keys())
+        for uid, entries in found.items():
+            for responder in source.responders.filter(responder__enabled=True):
+                responder.respond(uid, entries)
