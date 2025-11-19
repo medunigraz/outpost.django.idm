@@ -37,7 +37,7 @@ class SourceResponderInline(admin.TabularInline):
 
 
 class SourceChildAdmin(PolymorphicChildModelAdmin):
-    """ Base admin class for all child models """
+    """Base admin class for all child models"""
 
     base_model = models.Source
     inlines = (
@@ -53,7 +53,7 @@ class KaduuSourceAdmin(SourceChildAdmin):
 
 @admin.register(models.Source)
 class SourceParentAdmin(PolymorphicParentModelAdmin):
-    """ The parent model admin """
+    """The parent model admin"""
 
     base_model = models.Source
     child_models = (models.KaduuSource,)
@@ -61,7 +61,7 @@ class SourceParentAdmin(PolymorphicParentModelAdmin):
 
 
 class ExtractorChildAdmin(PolymorphicChildModelAdmin):
-    """ Base admin class for all child models """
+    """Base admin class for all child models"""
 
     base_model = models.Extractor
 
@@ -78,7 +78,7 @@ class RegularExpressionExtractorAdmin(ExtractorChildAdmin):
 
 @admin.register(models.Extractor)
 class ExtractorParentAdmin(PolymorphicParentModelAdmin):
-    """ The parent model admin """
+    """The parent model admin"""
 
     base_model = models.Extractor
     child_models = (
@@ -89,7 +89,7 @@ class ExtractorParentAdmin(PolymorphicParentModelAdmin):
 
 
 class ResponderChildAdmin(PolymorphicChildModelAdmin):
-    """ Base admin class for all child models """
+    """Base admin class for all child models"""
 
     base_model = models.Responder
 
@@ -121,7 +121,7 @@ class SQLResponderAdmin(ResponderChildAdmin):
 
 @admin.register(models.Responder)
 class ResponderParentAdmin(PolymorphicParentModelAdmin):
-    """ The parent model admin """
+    """The parent model admin"""
 
     base_model = models.Responder
     child_models = (

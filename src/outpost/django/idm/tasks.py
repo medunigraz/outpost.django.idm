@@ -137,9 +137,11 @@ class IDMTasks:
                                 "cn": cn,
                                 "member": actual,
                                 "extensionName": str(org.pk),
-                                "description": set((v for v in org.name.values() if v))
-                                if isinstance(org.name, dict)
-                                else str(org.name),
+                                "description": (
+                                    set((v for v in org.name.values() if v))
+                                    if isinstance(org.name, dict)
+                                    else str(org.name)
+                                ),
                             },
                         )
                     )

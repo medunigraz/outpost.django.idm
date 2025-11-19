@@ -2,7 +2,6 @@ import itertools
 import logging
 import re
 
-from django.contrib.postgres.fields import JSONField
 from django.core.mail import EmailMessage
 from django.db import models
 from django.template import (
@@ -101,9 +100,11 @@ class KaduuSource(Source):
                                     "filename": entry.get("fileName"),
                                     "leak": entry.get("leakId"),
                                     "source": entry.get("leakSource"),
-                                    "tags": entry.get("leakTags").split(",")
-                                    if entry.get("leakTags")
-                                    else None,
+                                    "tags": (
+                                        entry.get("leakTags").split(",")
+                                        if entry.get("leakTags")
+                                        else None
+                                    ),
                                     "cvss": entry.get("cvssScore"),
                                     "published": entry.get("leakPublishDate"),
                                     "discovered": entry.get("leakDiscoverDate"),
@@ -265,7 +266,7 @@ class JIRAResponder(Responder):
     summary = models.TextField()
     description = models.TextField()
     issuetype = models.CharField(max_length=128)
-    defaults = JSONField()
+    defaults = models.JSONField()
 
     def run(self, source, uid, entries):
         jira = JIRA(server=self.url, token_auth=self.token)
@@ -364,7 +365,7 @@ class Incident(models.Model):
     foreign = models.TextField(db_index=True)
     user = models.TextField()
     on = models.DateTimeField(auto_now_add=True)
-    details = JSONField()
+    details = models.JSONField()
 
     def __str__(self):
         return f"{self.source}: {self.user}"
