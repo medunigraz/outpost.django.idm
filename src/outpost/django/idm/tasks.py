@@ -188,7 +188,7 @@ class ThreatTasks:
             )
             for e in entries:
                 dn = e.get("dn")
-                logger.debug(f"Found user in {source.target}: {dn}")
+                logger.info(f"Found user in {source.target}: {dn}")
                 uid = e.get("attributes").get(source.ldap_uid)
                 check = ldap3.Connection(
                     server,
@@ -203,7 +203,8 @@ class ThreatTasks:
                     found[uid].append((foreign, details))
         source.last = timezone.now()
         source.save()
-        logger.debug(found.keys())
+        if len(found) != 0:
+            logger.info(found.keys())
         for uid, entries in found.items():
             for responder in source.responders.filter(responder__enabled=True):
                 responder.respond(uid, entries)

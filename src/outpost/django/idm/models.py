@@ -352,7 +352,12 @@ class SQLResponder(Responder):
             "entries": entries,
         }
         with engine.connect() as connection:
-            result = connection.execute(text(self.query), context)
+            uid = context.get("uid")
+            logger.debug(f"SQL responder executing query {self.query} with uid: {uid}")
+            if uid is None:
+                logger.error("SQL responder missing 'uid' in context, skipping execution")
+                return
+            result = connection.execute(text(self.query), uid=uid)
             if result.rowcount:
                 logger.debug(f"SQL responder returned {result.fetchall()}")
             else:
