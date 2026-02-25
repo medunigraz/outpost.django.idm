@@ -66,6 +66,7 @@ class KaduuSource(Source):
         return str(self.name)
 
     def fetch(self):
+        logger.debug(f"Starting Kaduu session with {settings.IDM_KADUU_CLIENT_ID} at {settings.IDM_KADUU_OAUTH_URL}")
         session = OAuth2Session(
             client=LegacyApplicationClient(client_id=settings.IDM_KADUU_CLIENT_ID)
         )
