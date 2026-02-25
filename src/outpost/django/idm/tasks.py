@@ -162,7 +162,7 @@ class ThreatTasks:
     @shared_task(bind=True, ignore_result=True, name=f"{__name__}.Threat:check")
     def check(task, pk):
         from .models import Source
-
+        logger.info(f"Checking for leaked credentials in source {pk}")
         try:
             source = Source.objects.get(pk=pk)
         except Source.DoesNotExist:
