@@ -1,3 +1,6 @@
+from datetime import timedelta
+from pathlib import Path
+
 from appconf import AppConf
 from django.conf import settings
 
@@ -9,6 +12,11 @@ class IDMAppConf(AppConf):
     KADUU_CLIENT_ID = ""
     KADUU_CLIENT_SECRET = ""
     KADUU_SEARCH_URL = "https://app.leak.center/svc-saas/leak/search?size=200&sort=createdAt,desc&length=500&highlight=true"
+    PASSWORD_BLOOM_SOCKET = "ipc:///run/outpost/bloom.socket"
+    PASSWORD_BLOOM_TIMEOUT = int(timedelta(seconds=2).total_seconds() * 1000)
+    PASSWORD_BLOOM_FILE = str(
+        Path(settings.MEDIA_ROOT).joinpath("idm", "haveibeenpwned.flor")
+    )
 
     class Meta:
         prefix = "idm"
