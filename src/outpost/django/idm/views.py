@@ -42,7 +42,7 @@ class PasswordCheckView(APIView):
         context = zmq.Context()
         socket = context.socket(zmq.REQ)
         socket.connect(settings.IDM_PASSWORD_BLOOM_SOCKET)
-        socket.setsockopt(zmq.RCVTIMEO, settings.settings.IDM_PASSWORD_BLOOM_TIMEOUT)
+        socket.setsockopt(zmq.RCVTIMEO, settings.IDM_PASSWORD_BLOOM_TIMEOUT)
         try:
             socket.send(umsgpack.packb({"value": hashed}))
             raw = socket.recv()
