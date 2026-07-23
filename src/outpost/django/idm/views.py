@@ -38,7 +38,12 @@ class PasswordCheckView(APIView):
         raw = request.data.get("password", None)
         if not raw:
             return Response()
-        hashed = sha1(raw.encode("utf-8")).hexdigest().upper().encode("ascii")
+        hashed = (
+            sha1(raw.encode("utf-8"), usedforsecurity=False)
+            .hexdigest()
+            .upper()
+            .encode("ascii")
+        )
         context = zmq.Context()
         socket = context.socket(zmq.REQ)
         socket.connect(settings.IDM_PASSWORD_BLOOM_SOCKET)

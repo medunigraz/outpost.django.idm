@@ -65,7 +65,9 @@ class KaduuSource(Source):
         return str(self.name)
 
     def fetch(self):
-        logger.debug(f"Starting Kaduu session with {settings.IDM_KADUU_CLIENT_ID} at {settings.IDM_KADUU_OAUTH_URL}")
+        logger.debug(
+            f"Starting Kaduu session with {settings.IDM_KADUU_CLIENT_ID} at {settings.IDM_KADUU_OAUTH_URL}"
+        )
         session = OAuth2Session(
             client=LegacyApplicationClient(client_id=settings.IDM_KADUU_CLIENT_ID)
         )
@@ -357,7 +359,9 @@ class SQLResponder(Responder):
             uid = context.get("uid")
             logger.debug(f"SQL responder executing query {self.query} with uid: {uid}")
             if uid is None:
-                logger.error("SQL responder missing 'uid' in context, skipping execution")
+                logger.error(
+                    "SQL responder missing 'uid' in context, skipping execution"
+                )
                 return
             result = connection.execute(text(self.query), uid=uid)
             if result.rowcount:

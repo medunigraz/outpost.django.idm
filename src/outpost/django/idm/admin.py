@@ -1,5 +1,6 @@
 import json
 
+import nh3
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 from polymorphic.admin import (
@@ -146,9 +147,9 @@ class IncidentAdmin(admin.ModelAdmin):
     readonly_fields = ("detail_view",)
 
     def detail_view(self, instance):
-        return mark_safe(
+        return mark_safe(  ## nosec B308, B703
             highlight(
-                json.dumps(instance.details, sort_keys=True, indent=4),
+                nh3.clean(json.dumps(instance.details, sort_keys=True, indent=4)),
                 lexers.JsonLexer(),
                 formatters.HtmlFormatter(),
             )
