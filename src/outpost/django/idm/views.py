@@ -45,11 +45,11 @@ class PasswordCheckView(APIView):
         socket.setsockopt(zmq.RCVTIMEO, settings.IDM_PASSWORD_BLOOM_TIMEOUT)
         try:
             socket.send(umsgpack.packb({"value": hashed}))
-            raw = socket.recv()
+            resp = socket.recv()
         except zmq.error.Again:
             found = None
         else:
-            found = umsgpack.unpackb(raw).get("found", None)
+            found = umsgpack.unpackb(resp).get("found", None)
 
         checked = zxcvbn(raw)
         suggestions = [_(msg) for msg in checked["feedback"]["suggestions"]]
