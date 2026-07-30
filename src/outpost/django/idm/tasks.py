@@ -208,6 +208,11 @@ class ThreatTasks:
         source.save()
         if len(found) != 0:
             logger.info(found.keys())
+        if len(found) > settings.IDM_USER_THREAT_THRESHOLD:
+            logger.error(
+                f"Found {len(found)} users with compromised accounts, exceeding threshold of {settings.IDM_USER_THREAT_THRESHOLD}. Aborting locking process."
+            )
+            return
         for uid, entries in found.items():
             for responder in source.responders.filter(responder__enabled=True):
                 responder.respond(uid, entries)

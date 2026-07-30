@@ -12,6 +12,7 @@ class IDMAppConf(AppConf):
     KADUU_CLIENT_ID = ""
     KADUU_CLIENT_SECRET = ""  # nosec B105
     KADUU_SEARCH_URL = "https://app.leak.center/svc-saas/leak/search?size=200&sort=createdAt,desc&length=500&highlight=true"
+    USER_THREAT_THRESHOLD = 30
     PASSWORD_BLOOM_SOCKET = "ipc:///run/outpost/bloom.socket"  # nosec B105
     PASSWORD_BLOOM_TIMEOUT = int(timedelta(seconds=2).total_seconds() * 1000)
     PASSWORD_BLOOM_FILE = str(
