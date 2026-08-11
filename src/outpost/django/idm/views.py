@@ -4,6 +4,7 @@ from hashlib import sha1
 import umsgpack
 import zmq
 from django.utils.translation import gettext as _
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from zxcvbn import zxcvbn
@@ -14,6 +15,9 @@ logger = logging.getLogger(__name__)
 
 
 class PasswordCheckView(APIView):
+
+    authentication_classes = []
+    permission_classes = [AllowAny]
 
     def post(self, request):
         """
