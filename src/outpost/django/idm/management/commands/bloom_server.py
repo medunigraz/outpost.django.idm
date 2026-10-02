@@ -1,3 +1,4 @@
+import gc
 import logging
 import os
 
@@ -23,24 +24,35 @@ class Command(BaseCommand):
         context = zmq.Context()
         socket = context.socket(zmq.REP)
         socket.bind(settings.IDM_PASSWORD_BLOOM_SOCKET)
-        logger.info("Loading bloom filter file {settings.IDM_PASSWORD_BLOOM_FILE}")
-        bf = flor.BloomFilter()
-        with open(settings.IDM_PASSWORD_BLOOM_FILE, "rb") as inp:
-            bf.read(inp)
-        n.notify("READY=1")
-        logger.info("Bloom filter is now ready, waiting for requests")
         while True:
-            try:
-                raw = socket.recv()
-                message = umsgpack.unpackb(raw)
-                logger.debug(f"Received message: {message}")
-                found = message.get("value") in bf
-                logger.debug(f"Sending match found: {found}")
-                reply = umsgpack.packb({"found": found})
-                socket.send(reply)
-            except TypeError:
-                logger.error("Packed data type is neither ‘bytes’ nor ‘bytearray’")
-            except umsgpack.UnpackException:
-                logger.error("Could not unpack message")
-            except zmq.ZMQError:
-                logger.error("Could not send or receive over ZMQ")
+            logger.info("Loading bloom filter file {settings.IDM_PASSWORD_BLOOM_FILE}")
+            bf = flor.BloomFilter()
+            with open(settings.IDM_PASSWORD_BLOOM_FILE, "rb") as inp:
+                bf.read(inp)
+            n.notify("READY=1")
+            logger.info("Bloom filter is now ready, waiting for requests")
+            while True:
+                try:
+                    raw = socket.recv()
+                    message = umsgpack.unpackb(raw)
+                    logger.debug(f"Received message: {message}")
+                    if message.get("reset") == settings.IDM_PASSWORD_BLOOM_SECRET:
+                        reply = umsgpack.packb({"reloading": True})
+                        socket.send(reply)
+                        break
+                    found = message.get("value") in bf
+                    logger.debug(f"Sending match found: {found}")
+                    reply = umsgpack.packb({"found": found})
+                    socket.send(reply)
+                except TypeError as e:
+                    logger.error(
+                        "Packed data type is neither ‘bytes’ nor ‘bytearray’",
+                        exc_info=e,
+                    )
+                except umsgpack.UnpackException as e:
+                    logger.error("Could not unpack message", exc_info=e)
+                except zmq.ZMQError as e:
+                    logger.error("Could not send or receive over ZMQ", exc_info=e)
+            n.notify("RELOADING=1")
+            del bf
+            gc.collect()

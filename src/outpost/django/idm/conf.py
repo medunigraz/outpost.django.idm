@@ -18,6 +18,7 @@ class IDMAppConf(AppConf):
     PASSWORD_BLOOM_FILE = str(
         Path(settings.MEDIA_ROOT).joinpath("idm", "haveibeenpwned.flor")
     )
+    PASSWORD_BLOOM_SECRET = "12345"
 
     class Meta:
         prefix = "idm"
