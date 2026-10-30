@@ -15,10 +15,9 @@ class IDMAppConf(AppConf):
     USER_THREAT_THRESHOLD = 30
     PASSWORD_BLOOM_SOCKET = "ipc:///run/outpost/bloom.socket"  # nosec B105
     PASSWORD_BLOOM_TIMEOUT = int(timedelta(seconds=2).total_seconds() * 1000)
-    PASSWORD_BLOOM_FILE = str(
-        Path(settings.MEDIA_ROOT).joinpath("idm", "haveibeenpwned.flor")
-    )
     PASSWORD_BLOOM_SECRET = "12345"
+    PASSWORD_BLOOM_FALSE_POSITIVE_RATE = 0.001
+    PASSWORD_BLOOM_CAPACITY_SAFETY_FACTOR = 1.01
 
     class Meta:
         prefix = "idm"

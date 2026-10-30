@@ -18,14 +18,14 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         logger.info(
-            "Starting bloom filter server on {settings.IDM_PASSWORD_BLOOM_SOCKET}"
+            f"Starting bloom filter server on {settings.IDM_PASSWORD_BLOOM_SOCKET}"
         )
         n = sdnotify.SystemdNotifier()
         context = zmq.Context()
         socket = context.socket(zmq.REP)
         socket.bind(settings.IDM_PASSWORD_BLOOM_SOCKET)
         while True:
-            logger.info("Loading bloom filter file {settings.IDM_PASSWORD_BLOOM_FILE}")
+            logger.info(f"Loading bloom filter file {settings.IDM_PASSWORD_BLOOM_FILE}")
             bf = flor.BloomFilter()
             with open(settings.IDM_PASSWORD_BLOOM_FILE, "rb") as inp:
                 bf.read(inp)
