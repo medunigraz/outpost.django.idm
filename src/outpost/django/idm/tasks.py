@@ -67,9 +67,11 @@ class IDMTasks:
 
         users = {e.get("attributes").get("cn"): e.get("dn") for e in entries}
 
-        orgs = campusonline.Organization.objects.annotate(
-            person_count=Count("persons")
-        ).filter(person_count__gt=0)
+        orgs = (
+            campusonline.Organization.objects.filter(persons__employed=True)
+            .annotate(person_count=Count("persons"))
+            .filter(person_count__gt=0)
+        )
         logger.debug(f"Processing {orgs.count()} organizations for {target}")
 
         for org in orgs:
