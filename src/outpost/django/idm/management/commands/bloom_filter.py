@@ -136,7 +136,7 @@ class Command(BaseCommand):
                 context.term()
 
         hash_count = count_hashes(settings.IDM_PASSWORD_BLOOM_INPUT_DIR)
-        
+
         try:
             build_bloomfilter(hash_count)
         except Exception as e:
