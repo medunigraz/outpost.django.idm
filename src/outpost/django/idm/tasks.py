@@ -101,7 +101,7 @@ class IDMTasks:
                 present = groups.pop(dn)
                 delete = present - actual
                 if delete:
-                    logger.info("Removing members from {dn} on {target}")
+                    logger.info(f"Removing members from {dn} on {target}")
                     logger.debug(f"Removed members: {delete}")
                     if not dry_run:
                         result = Result(
@@ -115,7 +115,7 @@ class IDMTasks:
                             )
                 add = actual - present
                 if add:
-                    logger.info("Adding members to {dn} on {target}")
+                    logger.info(f"Adding members to {dn} on {target}")
                     logger.debug(f"New members: {add}")
                     if not dry_run:
                         result = Result(
