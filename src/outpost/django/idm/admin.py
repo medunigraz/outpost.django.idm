@@ -22,7 +22,7 @@ class LDAPTargetAdmin(admin.ModelAdmin):
     list_display = (
         "url",
         "username",
-        "group_base",
+        "organization_base",
         "user_base",
         "enabled",
     )

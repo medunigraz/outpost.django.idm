@@ -46,7 +46,7 @@ class IDMTasks:
         logger.debug(f"Searcing for existing groups {ldap}")
 
         entries = ldap.extend.standard.paged_search(
-            search_base=target.group_base,
+            search_base=target.organization_base,
             search_filter="(objectClass=group)",
             search_scope=ldap3.SUBTREE,
             attributes=("member", "description"),
@@ -86,7 +86,7 @@ class IDMTasks:
                 )
             )
             cn = f"{org.pk}-{slug}"
-            dn = f"CN={cn},{target.group_base}"
+            dn = f"CN={cn},{target.organization_base}"
 
             actual = set(
                 (
