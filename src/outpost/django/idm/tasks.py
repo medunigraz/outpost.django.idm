@@ -32,7 +32,7 @@ class IDMTasks:
             logger.error(f"Could not load LDAP target {pk}")
             return
 
-        logger.info(f"Synchronizing organizational groups to {target}")
+        logger.info(f"Synchronizing organization groups to {target}")
 
         ldap = ldap3.Connection(
             ldap3.Server(target.url, get_info=ldap3.ALL),
@@ -43,7 +43,7 @@ class IDMTasks:
             client_strategy=ldap3.SAFE_SYNC,
         )
 
-        logger.debug(f"Searcing for existing groups {ldap}")
+        logger.debug(f"Searcing for existing organization groups {ldap}")
 
         entries = ldap.extend.standard.paged_search(
             search_base=target.organization_base,
