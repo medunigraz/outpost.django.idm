@@ -22,8 +22,6 @@ class LDAPTargetAdmin(admin.ModelAdmin):
     list_display = (
         "url",
         "username",
-        "organization_base",
-        "user_base",
         "enabled",
     )
     list_filter = ("enabled",)
