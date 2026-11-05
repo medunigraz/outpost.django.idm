@@ -8,11 +8,7 @@ from polymorphic.admin import (
     PolymorphicChildModelFilter,
     PolymorphicParentModelAdmin,
 )
-from pygments import (
-    formatters,
-    highlight,
-    lexers,
-)
+from pygments import formatters, highlight, lexers
 
 from . import models
 

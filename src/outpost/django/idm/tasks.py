@@ -1,9 +1,6 @@
 import logging
 import textwrap
-from collections import (
-    defaultdict,
-    namedtuple,
-)
+from collections import defaultdict, namedtuple
 
 import ldap3
 from celery import shared_task

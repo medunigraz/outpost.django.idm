@@ -4,10 +4,7 @@ import re
 
 from django.core.mail import EmailMessage
 from django.db import models
-from django.template import (
-    Context,
-    Template,
-)
+from django.template import Context, Template
 from django.utils.translation import gettext as _
 from jira import JIRA
 from oauthlib.oauth2 import LegacyApplicationClient
@@ -17,10 +14,7 @@ from polymorphic.models import PolymorphicModel
 from purl import URL
 from requests_oauthlib import OAuth2Session
 from requests_toolbelt.sessions import BaseUrlSession
-from sqlalchemy import (
-    create_engine,
-    text,
-)
+from sqlalchemy import create_engine, text
 
 from .conf import settings
 
