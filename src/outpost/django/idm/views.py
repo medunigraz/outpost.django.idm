@@ -105,6 +105,8 @@ class HookAccountView(APIView):
     def initial(self, request, *args, **kwargs):
         super().initial(request, *args, **kwargs)
         validator = self.validators.get(request.method.lower())
+        if not validator:
+            raise BadRequest("Method not supported")
         try:
             validator(request.data)
         except fastjsonschema.JsonSchemaException as e:
